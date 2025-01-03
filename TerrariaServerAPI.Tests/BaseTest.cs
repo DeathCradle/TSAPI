@@ -12,20 +12,21 @@ public class BaseTest
 	[OneTimeSetUp]
 	public void EnsureInitialised()
 	{
+		TestContext.Out.WriteLine($"Test architecture {RuntimeInformation.ProcessArchitecture}");
+
 		if (!_initialized)
 		{
-			var are = new AutoResetEvent(false);
+			AutoResetEvent are = new(false);
 			Exception? error = null;
-			HookEvents.HookDelegate<global::Terraria.Main,HookEvents.Terraria.Main. DedServEventArgs> cb = (instance, args) =>
+			HookEvents.HookDelegate<global::Terraria.Main, HookEvents.Terraria.Main.DedServEventArgs> cb = (instance, args) =>
 			{
 				instance.Initialize();
 				are.Set();
 				_initialized = true;
-				Console.WriteLine($"Server init process successful for architecture {RuntimeInformation.ProcessArchitecture}");
 			};
 			HookEvents.Terraria.Main.DedServ += cb;
 
-			global::TerrariaApi.Server.Program.Main(new string[] { });
+			global::TerrariaApi.Server.Program.Main([]);
 
 			_initialized = are.WaitOne(TimeSpan.FromSeconds(30));
 
