@@ -37,6 +37,10 @@ internal static class ItemHooks
 
 	private static void OnQuickStack(object sender, Hooks.Chest.QuickStackEventArgs e)
 	{
+		if (e.Result == HookResult.Cancel)
+		{
+			return;
+		}
 		if (_hookManager.InvokeItemForceIntoChest(Main.chest[e.ChestIndex], e.Item, Main.player[e.PlayerId]))
 		{
 			e.Result = HookResult.Cancel;

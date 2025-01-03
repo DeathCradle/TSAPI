@@ -47,6 +47,10 @@ internal class NetHooks
 
 	static void OnSendData(object sender, Hooks.NetMessage.SendDataEventArgs e)
 	{
+		if (e.Result == HookResult.Cancel)
+		{
+			return;
+		}
 		if (e.Event == HookEvent.Before)
 		{
 			var msgType = e.MsgType;
@@ -108,6 +112,10 @@ internal class NetHooks
 
 	static void OnReceiveData(object sender, Hooks.MessageBuffer.GetDataEventArgs e)
 	{
+		if (e.Result == HookResult.Cancel)
+		{
+			return;
+		}
 		if (!Enum.IsDefined(typeof(PacketTypes), (int)e.PacketId))
 		{
 			e.Result = HookResult.Cancel;
@@ -138,6 +146,10 @@ internal class NetHooks
 
 	static void OnSendBytes(object sender, Hooks.NetMessage.SendBytesEventArgs e)
 	{
+		if (e.Result == HookResult.Cancel)
+		{
+			return;
+		}
 		if (_hookManager.InvokeNetSendBytes(Netplay.Clients[e.RemoteClient], e.Data, e.Offset, e.Size))
 		{
 			e.Result = HookResult.Cancel;
@@ -146,6 +158,10 @@ internal class NetHooks
 
 	static void OnNameCollision(object sender, Hooks.MessageBuffer.NameCollisionEventArgs e)
 	{
+		if (e.Result == HookResult.Cancel)
+		{
+			return;
+		}
 		if (_hookManager.InvokeNetNameCollision(e.Player.whoAmI, e.Player.name))
 		{
 			e.Result = HookResult.Cancel;

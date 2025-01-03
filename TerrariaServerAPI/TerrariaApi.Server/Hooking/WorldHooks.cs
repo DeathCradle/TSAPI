@@ -27,6 +27,10 @@ internal static class WorldHooks
 
 	static void OnPressurePlate(object sender, Hooks.Collision.PressurePlateEventArgs e)
 	{
+		if (e.Result == HookResult.Cancel)
+		{
+			return;
+		}
 		if (e.Entity is NPC npc)
 		{
 			if (_hookManager.InvokeNpcTriggerPressurePlate(npc, e.X, e.Y))
@@ -60,6 +64,10 @@ internal static class WorldHooks
 
 	static void OnDropMeteor(object sender, Hooks.WorldGen.MeteorEventArgs e)
 	{
+		if (e.Result == HookResult.Cancel)
+		{
+			return;
+		}
 		if (_hookManager.InvokeWorldMeteorDrop(e.X, e.Y))
 		{
 			e.Result = HookResult.Cancel;
