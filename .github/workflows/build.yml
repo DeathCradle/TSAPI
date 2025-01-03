@@ -12,8 +12,28 @@ on:
 jobs:
   # This workflow contains a single job called "build"
   build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ 
+          {
+            name: Windows,
+            runs-on: windows-latest,
+          },
+          {
+            name: Ubuntu,
+            runs-on: ubuntu-latest,
+          },
+          {
+            name: MacOS,
+            runs-on: macos-latest,
+          }
+        ]
+
     # The type of runner that the job will run on
-    runs-on: windows-latest
+    runs-on: ${{ matrix.os.runs-on }}
+
+    name: ${{ matrix.os.name }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -32,9 +52,3 @@ jobs:
 
       - name: Run tests
         run: dotnet test --filter "FullyQualifiedName!~TerrariaServerAPI.Tests.Benchmarks"
-        
-      # example task for the release CI 
-      # - name: "Releasing to NuGet: TSAPI"
-      #   env:
-      #     NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-      #   run: dotnet nuget push ./TerrariaServerAPI/bin/Release/TerrariaServer.*.nupkg --source https://api.nuget.org/v3/index.json --api-key "$env:NUGET_API_KEY"

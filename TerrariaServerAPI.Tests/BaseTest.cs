@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using System;
+using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace TerrariaServerAPI.Tests;
@@ -20,6 +21,7 @@ public class BaseTest
 				instance.Initialize();
 				are.Set();
 				_initialized = true;
+				Console.WriteLine($"Server init process successful for architecture {RuntimeInformation.ProcessArchitecture}");
 			};
 			HookEvents.Terraria.Main.DedServ += cb;
 
