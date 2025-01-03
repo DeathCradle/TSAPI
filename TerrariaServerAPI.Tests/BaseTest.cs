@@ -15,19 +15,19 @@ public class BaseTest
 		{
 			var are = new AutoResetEvent(false);
 			Exception? error = null;
-			On.Terraria.Main.hook_DedServ cb = (On.Terraria.Main.orig_DedServ orig, Terraria.Main instance) =>
+			HookEvents.HookDelegate<global::Terraria.Main,HookEvents.Terraria.Main. DedServEventArgs> cb = (instance, args) =>
 			{
 				instance.Initialize();
 				are.Set();
 				_initialized = true;
 			};
-			On.Terraria.Main.DedServ += cb;
+			HookEvents.Terraria.Main.DedServ += cb;
 
 			global::TerrariaApi.Server.Program.Main(new string[] { });
 
 			_initialized = are.WaitOne(TimeSpan.FromSeconds(30));
 
-			On.Terraria.Main.DedServ -= cb;
+			HookEvents.Terraria.Main.DedServ -= cb;
 
 			Assert.That(_initialized, Is.True);
 			Assert.That(error, Is.Null);
