@@ -1,6 +1,5 @@
 ﻿using NUnit.Framework;
 using System.Runtime.InteropServices;
-using Terraria.Utilities;
 
 namespace TerrariaServerAPI.Tests;
 
@@ -11,27 +10,28 @@ public class BaseTest
 	[OneTimeSetUp]
 	public void EnsureInitialised()
 	{
-		TestContext.Out.WriteLine($"Test architecture {RuntimeInformation.ProcessArchitecture}");
-
 		if (!_initialized)
 		{
+			TestContext.Out.WriteLine($"Test architecture {RuntimeInformation.ProcessArchitecture}");
+
 			bool invoked = false;
-			HookEvents.HookDelegate<global::Terraria.Main, HookEvents.Terraria.Main.DedServEventArgs> cb = (instance, args) =>
+			HookEvents.HookDelegate<Terraria.Main, HookEvents.Terraria.Main.DedServEventArgs> cb = (instance, args) =>
 			{
 				invoked = true;
 				// DedServ typically requires input, so no need to continue execution
 				args.ContinueExecution = false;
 				// DedServ calls the following, which is needed for subsequent tests
-				global::Terraria.Main.rand = new UnifiedRandom();
 				instance.Initialize();
 			};
 			HookEvents.Terraria.Main.DedServ += cb;
 
-			global::TerrariaApi.Server.Program.Main([]);
+			TerrariaApi.Server.Program.Main([]);
 
 			HookEvents.Terraria.Main.DedServ -= cb;
 
 			Assert.That(invoked, Is.True);
+
+			_initialized = true;
 		}
 	}
 }

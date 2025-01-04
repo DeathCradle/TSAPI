@@ -22,16 +22,12 @@ public class ServerInitTests : BaseTest
 
 		bool invoked = false;
 
-		On.Terraria.Main.hook_DedServ callback = (orig, self) =>
-		{
-			invoked = true;
-			// DedServ typically requires input, so no need to continue execution
-		};
-		On.Terraria.Main.DedServ += callback;
+		On.Terraria.Program.hook_RunGame callback = (orig) => invoked = true;
+		On.Terraria.Program.RunGame += callback;
 
-		global::TerrariaApi.Server.Program.Main([]);
+		Terraria.Program.RunGame();
 
-		On.Terraria.Main.DedServ -= callback;
+		On.Terraria.Program.RunGame -= callback;
 
 		Assert.That(invoked, Is.True);
 	}
