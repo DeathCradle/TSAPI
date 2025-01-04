@@ -20,6 +20,8 @@ public class BaseTest
 				invoked = true;
 				// DedServ typically requires input, so no need to continue execution
 				args.ContinueExecution = false;
+				// DedServ calls the following method, which is needed for subsequent tests
+				instance.Initialize();
 			};
 			HookEvents.Terraria.Main.DedServ += cb;
 
