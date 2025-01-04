@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using System.Runtime.InteropServices;
+using Terraria.Utilities;
 
 namespace TerrariaServerAPI.Tests;
 
@@ -20,7 +21,8 @@ public class BaseTest
 				invoked = true;
 				// DedServ typically requires input, so no need to continue execution
 				args.ContinueExecution = false;
-				// DedServ calls the following method, which is needed for subsequent tests
+				// DedServ calls the following, which is needed for subsequent tests
+				global::Terraria.Main.rand = new UnifiedRandom();
 				instance.Initialize();
 			};
 			HookEvents.Terraria.Main.DedServ += cb;
