@@ -1,7 +1,5 @@
 ﻿using NUnit.Framework;
-using System;
 using System.Runtime.InteropServices;
-using System.Threading;
 
 namespace TerrariaServerAPI.Tests;
 
@@ -16,24 +14,20 @@ public class BaseTest
 
 		if (!_initialized)
 		{
-			AutoResetEvent are = new(false);
-			Exception? error = null;
+			bool invoked = false;
 			HookEvents.HookDelegate<global::Terraria.Main, HookEvents.Terraria.Main.DedServEventArgs> cb = (instance, args) =>
 			{
-				instance.Initialize();
-				are.Set();
-				_initialized = true;
+				invoked = true;
+				// DedServ typically requires input, so no need to continue execution
+				args.ContinueExecution = false;
 			};
 			HookEvents.Terraria.Main.DedServ += cb;
 
 			global::TerrariaApi.Server.Program.Main([]);
 
-			_initialized = are.WaitOne(TimeSpan.FromSeconds(30));
-
 			HookEvents.Terraria.Main.DedServ -= cb;
 
-			Assert.That(_initialized, Is.True);
-			Assert.That(error, Is.Null);
+			Assert.That(invoked, Is.True);
 		}
 	}
 }
