@@ -171,6 +171,7 @@ internal class NetHooks
 	static void OnConnectionAccepted(object? sender, HookEvents.Terraria.Netplay.OnConnectionAcceptedEventArgs args)
 	{
 		if (!args.ContinueExecution) return;
+		args.ContinueExecution = false;
 		int slot = FindNextOpenClientSlot();
 		if (slot != -1)
 		{
