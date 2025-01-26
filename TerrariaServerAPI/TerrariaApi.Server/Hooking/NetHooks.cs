@@ -23,12 +23,22 @@ internal class NetHooks
 		HookEvents.Terraria.Netplay.OnConnectionAccepted += OnConnectionAccepted;
 		HookEvents.Terraria.Chat.ChatHelper.BroadcastChatMessage += OnBroadcastChatMessage;
 		HookEvents.Terraria.Net.NetManager.SendData += OnSendNetData;
+			On.Terraria.Netplay.UpdateConnectedClients += OnUpdateConnectedClients;
 
 		Hooks.NetMessage.SendData += OnSendData;
 		Hooks.NetMessage.SendBytes += OnSendBytes;
 		Hooks.MessageBuffer.GetData += OnReceiveData;
 		Hooks.MessageBuffer.NameCollision += OnNameCollision;
 	}
+
+		static void OnUpdateConnectedClients(On.Terraria.Netplay.orig_UpdateConnectedClients orig)
+		{
+			orig();
+			if (ServerApi.ForceUpdate)
+			{
+				Terraria.Netplay.HasClients = true;
+			}
+		}
 
 	static void OnBroadcastChatMessage(object? sender, HookEvents.Terraria.Chat.ChatHelper.BroadcastChatMessageEventArgs args)
 	{
